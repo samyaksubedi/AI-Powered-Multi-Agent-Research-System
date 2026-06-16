@@ -4,6 +4,8 @@ from Agents.agent import (
     writer_chain,
     reasoning_chain,
 )
+import os
+import uuid
 
 
 def run_research_pipeline(topic: str) -> dict:
@@ -24,6 +26,7 @@ def run_research_pipeline(topic: str) -> dict:
             ]
         }
     )
+    # print(search_result["messages"][-1].content)  # Tool Call Results
     state["search_results"] = search_result["messages"][-1].content
 
     # print("\n search result ", state["search_results"])
@@ -62,21 +65,24 @@ def run_research_pipeline(topic: str) -> dict:
     state["report"] = writer_chain.invoke(
         {"topic": topic, "research": research_combined}
     )
-
+    output_dir = "../Temp-Reports"
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, f"{topic}-report-{uuid.uuid4().hex}.md")
     # print("\n Final Report\n", state["report"])
-    with open(f"{topic}-report.md", "w") as f:
+    with open(output_path, "w") as f:
         f.write(state["report"])
+    print("Report created at : ", output_path)
 
-    # critic report
+    # critic report - No any use
 
-    print("\n" + " =" * 50)
-    print("step 4 - critic is reviewing the report ")
-    print("=" * 50)
+    # print("\n" + " =" * 50)
+    # print("step 4 - critic is reviewing the report ")
+    # print("=" * 50)
 
-    state["feedback"] = reasoning_chain.invoke({"report": state["report"]})
+    # state["feedback"] = reasoning_chain.invoke({"report": state["report"]})
 
-    # print("\n critic report \n", state["feedback"])
-    with open(f"{topic}-report-feedback.md", "w") as f:
-        f.write(state["feedback"])
+    # # print("\n critic report \n", state["feedback"])
+    # with open(f"{topic}-report-feedback.md", "w") as f:
+    #     f.write(state["feedback"])
 
-    return state
+    return output_path
