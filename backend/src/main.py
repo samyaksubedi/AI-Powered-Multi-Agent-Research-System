@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from Pipeline.research_service_pipeline import run_research_pipeline
 from pydantic import BaseModel, Field
-
+from fastapi.middleware.cors import CORSMiddleware
 # from fastapi.responses import FileResponse
-# import os
+import os
 
 
 class GenerateReport(BaseModel):
@@ -11,6 +11,12 @@ class GenerateReport(BaseModel):
 
 
 app = FastAPI(description="An API to generate research on Any given topic")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[os.getenv("CLIENT_URL")],  # tighten this in production
+    allow_methods=["POST"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
