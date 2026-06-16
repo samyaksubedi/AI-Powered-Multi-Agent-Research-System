@@ -65,13 +65,12 @@ def run_research_pipeline(topic: str) -> dict:
     state["report"] = writer_chain.invoke(
         {"topic": topic, "research": research_combined}
     )
-    output_dir = "../Temp-Reports"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, f"{topic}-report-{uuid.uuid4().hex}.md")
+    # output_dir = "../Temp-Reports"
+    # os.makedirs(output_dir, exist_ok=True)
+    # output_path = os.path.join(output_dir, f"{topic}-report-{uuid.uuid4().hex}.md")
     # print("\n Final Report\n", state["report"])
-    with open(output_path, "w") as f:
-        f.write(state["report"])
-    print("Report created at : ", output_path)
+    # with open(output_path, "w") as f:
+    #     f.write(state["report"])
 
     # critic report - No any use
 
@@ -84,5 +83,6 @@ def run_research_pipeline(topic: str) -> dict:
     # # print("\n critic report \n", state["feedback"])
     # with open(f"{topic}-report-feedback.md", "w") as f:
     #     f.write(state["feedback"])
-
-    return output_path
+    # abs_path = os.path.abspath(output_path)
+    # print("Report created at : ", abs_path)
+    return {"topic": topic, "report": state["report"]}
